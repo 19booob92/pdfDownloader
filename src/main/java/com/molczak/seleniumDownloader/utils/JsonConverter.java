@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.gson.JsonParser;
 import com.molczak.seleniumDownloader.entity.SubjectNameAndUrl;
 
 public class JsonConverter {

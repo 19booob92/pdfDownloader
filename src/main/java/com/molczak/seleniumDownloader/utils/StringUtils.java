@@ -32,4 +32,9 @@ public class StringUtils {
 		return allMatches;
 	}
 
+	public static String removeWhiteSpaces(String newName) {
+		
+		return newName.trim().replace(" ", "_").toLowerCase();
+	}
+
 }

@@ -10,11 +10,9 @@ import java.util.Optional;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.molczak.seleniumDownloader.entity.SubjectNameAndUrl;
+import com.molczak.seleniumDownloader.utils.FileUtils;
 import com.molczak.seleniumDownloader.utils.HTTPConnector;
 import com.molczak.seleniumDownloader.utils.JsonConverter;
 import com.molczak.seleniumDownloader.utils.SeleniumUtils;
@@ -25,13 +23,10 @@ public class DownloadJsons {
 	
 	private HTTPConnector httpConnector = new  HTTPConnector();
 	private JsonConverter converter = new JsonConverter();
-	private WebDriver driver = new FirefoxDriver();
+	private FileUtils fileUtils = new FileUtils();
 	
 	public List<String> saveData() throws ClientProtocolException, IOException {
 		
-		FirefoxProfile ffProfile = SeleniumUtils.createFFProfile();
-		driver = new FirefoxDriver(ffProfile);
-				
 		HttpResponse downloadJson = httpConnector.downloadJson();
 
 		InputStream content = downloadJson.getEntity().getContent();
@@ -39,8 +34,19 @@ public class DownloadJsons {
 		BufferedReader bufferedInputStream = new BufferedReader(new InputStreamReader(content));
 		
 		Optional<List<SubjectNameAndUrl>> parseJsonToEntity = converter.parseJsonToEntity(bufferedInputStream);
+		
 		parseJsonToEntity.get().stream().forEach((subjectNameAndUrl) -> {
-			SeleniumUtils.downloadFile(driver, subjectNameAndUrl);
+			SeleniumUtils.downloadFile(subjectNameAndUrl);
+			
+			try {
+				Thread.sleep(15000);
+				
+				fileUtils.changeLastFileName(subjectNameAndUrl.getName());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
 		}); 
 		
 		return Collections.emptyList();
