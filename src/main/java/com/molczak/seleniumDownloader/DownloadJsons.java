@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.molczak.seleniumDownloader.entity.SubjectNameAndUrl;
 import com.molczak.seleniumDownloader.utils.FileUtils;
@@ -36,12 +38,18 @@ public class DownloadJsons {
 		Optional<List<SubjectNameAndUrl>> parseJsonToEntity = converter.parseJsonToEntity(bufferedInputStream);
 		
 		parseJsonToEntity.get().stream().forEach((subjectNameAndUrl) -> {
-			SeleniumUtils.downloadFile(subjectNameAndUrl);
+			WebDriver driver = new FirefoxDriver(SeleniumUtils.createFFProfile());
+			
+			SeleniumUtils.downloadFile(subjectNameAndUrl, driver);
 			
 			try {
 				Thread.sleep(15000);
 				
 				fileUtils.changeLastFileName(subjectNameAndUrl.getName());
+				
+				driver.switchTo().window(driver.getWindowHandle()).close();
+				
+				driver.quit();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

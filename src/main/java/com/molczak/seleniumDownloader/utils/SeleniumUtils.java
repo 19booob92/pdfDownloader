@@ -13,8 +13,6 @@ import com.molczak.seleniumDownloader.entity.SubjectNameAndUrl;
 
 public class SeleniumUtils {
 
-	private static WebDriver driver = null;
-
 	public static FirefoxProfile createFFProfile() {
 		FirefoxProfile firefoxProfile = new FirefoxProfile();
 
@@ -28,13 +26,10 @@ public class SeleniumUtils {
 		return firefoxProfile;
 	}
 
-	public static void downloadFile(SubjectNameAndUrl subjectNameAndUrl) {
+	public static void downloadFile(SubjectNameAndUrl subjectNameAndUrl, WebDriver driver) {
 		String url = subjectNameAndUrl.getUrl();
 
 		if (url != null && !url.isEmpty() && url.contains("http")) {
-			FirefoxProfile ffProfile = SeleniumUtils.createFFProfile();
-			driver = new FirefoxDriver(ffProfile);
-
 			driver.get(url);
 
 			WebDriverWait wait = new WebDriverWait(driver, 120);
@@ -47,8 +42,6 @@ public class SeleniumUtils {
 			// wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ReportViewer1_ctl05_ctl04_ctl00_Menu")));
 			saveBtn.sendKeys(Keys.ARROW_DOWN);
 			saveBtn.sendKeys(Keys.ENTER);
-
-			driver.close();
 		}
 	}
 
